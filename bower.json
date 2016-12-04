@@ -1,0 +1,22 @@
+{
+  "name": "skeleton_in_the_gulp",
+  "description": "gulp templation",
+  "main": "index.js",
+  "authors": [
+    "whiter_shade"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/whitershade/skeleton_in_the_gulp",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "normalize-css": "^5.0.0"
+  }
+}

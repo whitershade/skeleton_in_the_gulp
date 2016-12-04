@@ -1,7 +1,7 @@
 {
-  "name": "idee-front-end",
+  "name": "skeleton_in_the_gulp",
   "version": "1.0.0",
-  "description": "idee front-end",
+  "description": "skeleton_in_the_gulp",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

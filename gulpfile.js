@@ -79,7 +79,7 @@ gulp.task('pug:develop', function() { // Создаем таск для HTML
   gulp.src(path.src.pug)
     .pipe(pug({
         pretty: true
-      })) // компилировать pug в html
+      }).on('error', handleError)) // компилировать pug в html
     .pipe(gulp.dest(path.build.html)) // выплюнуть html по назначению
     .pipe(browserSync.reload({stream:true})); // Выполняем обновление в браузере
 });

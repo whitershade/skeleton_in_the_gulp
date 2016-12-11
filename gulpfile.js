@@ -47,6 +47,10 @@ var gulp = require('gulp'), // Подключаем Gulp
       // что будем подчищать
       clean: {
         develop: './build',
+        developImg: './build/img/**/*.*',
+        developFonts: './build/fonts/**/*.*',
+        distImg: './dist/img/**/*.*',
+        distFonts: './dist/fonts/**/*.*',
         dist: './dist'
       }
     };
@@ -117,26 +121,30 @@ gulp.task('scss:dist', function() { // Создаем таск "sass"
 });
 
 // IMAGES
-gulp.task('image:develop', function () {
+gulp.task('image:develop', function (cb) {
+    rimraf(path.clean.developImg, cb);
     gulp.src(path.src.img) //Выберем наши картинки
         .pipe(gulp.dest(path.build.img)) //И бросим в build
         .pipe(browserSync.reload({stream: true}));
 });
 
-gulp.task('image:dist', function () {
+gulp.task('image:dist', function (cb) {
+    rimraf(path.clean.distImg, cb);
     gulp.src(path.src.img) //Выберем наши картинки
         .pipe(gulp.dest(path.dist.img)) //И бросим в dist
         .pipe(browserSync.reload({stream: true}));
 });
 
 // FONTS
-gulp.task('fonts:develop', function() {
+gulp.task('fonts:develop', function(cb) {
+    rimraf(path.clean.developFonts, cb);
     gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.build.fonts))
         .pipe(browserSync.reload({stream: true}));
 });
 
-gulp.task('fonts:dist', function() {
+gulp.task('fonts:dist', function(cb) {
+    rimraf(path.clean.distFonts, cb);
     gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.dist.fonts))
         .pipe(browserSync.reload({stream: true}));

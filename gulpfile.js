@@ -1,6 +1,6 @@
 var gulp = require('gulp'), // Подключаем Gulp
     sass = require('gulp-sass'), // Подключаем sass/scss
-    cssmin = require('gulp-minify-css'), // Подключаем минимизатор для css
+    cleanCSS = require('gulp-clean-css'), // Подключаем минимизатор для css
     autoprefixer = require('gulp-autoprefixer'), // Подключаем автопрефиксер
     sourcemaps = require('gulp-sourcemaps'), // Подключим soucemaps
     rigger = require('gulp-rigger'), // для склеивания файлов
@@ -102,7 +102,7 @@ gulp.task('scss:develop', function() { // Создаем таск "sass"
     gulp.src(path.src.style) // Берем источник
         .pipe(sourcemaps.init()) // Инициализируем sourcemaps
         .pipe(sass().on('error', handleError)) // Преобразуем Scss в CSS посредством gulp-sass
-        .pipe(cssmin()) // Минимизируем их
+        .pipe(cleanCSS({compatibility: 'ie8'})) // Минимизируем их
         .pipe(sourcemaps.write()) // Запишем sourcemaps
         .pipe(gulp.dest(path.build.css)) // Выгружаем результат в папку build/css
         .pipe(browserSync.stream()) // Обновляем CSS на странице при изменении
@@ -115,7 +115,7 @@ gulp.task('scss:dist', function() { // Создаем таск "sass"
             browsers: ['last 10 versions'],
             cascade: false
         }))
-        .pipe(cssmin()) // Минимизируем их
+        .pipe(cleanCSS({compatibility: 'ie8'}))  // Минимизируем их
         .pipe(gulp.dest(path.dist.css)) // Выгружаем результат в папку dist/css
         .pipe(browserSync.reload({stream: true})) // Обновляем CSS на странице при изменении
 });

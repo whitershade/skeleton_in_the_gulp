@@ -1,216 +1,122 @@
-linters:
-
-  BangFormat:
-    enabled: true
-    space_before_bang: true
-    space_after_bang: false
-
-  BemDepth:
-    enabled: true
-    max_elements: 1
-
-  BorderZero:
-    enabled: true
-    convention: zero
-
-  ChainedClasses:
-    enabled: false
-
-  ColorKeyword:
-    enabled: true
-
-  ColorVariable:
-    enabled: false
-
-  Comment:
-    enabled: false
-
-  DebugStatement:
-    enabled: true
-
-  DeclarationOrder:
-    enabled: true
-
-  DisableLinterReason:
-    enabled: true
-
-  DuplicateProperty:
-    enabled: false
-
-  ElsePlacement:
-    enabled: true
-    style: same_line
-
-  EmptyLineBetweenBlocks:
-    enabled: true
-    ignore_single_line_blocks: true
-
-  EmptyRule:
-    enabled: true
-
-  ExtendDirective:
-    enabled: false
-
-  FinalNewline:
-    enabled: true
-    present: true
-
-  HexLength:
-    enabled: true
-    style: short
-
-  HexNotation:
-    enabled: true
-    style: lowercase
-
-  HexValidation:
-    enabled: true
-
-  IdSelector:
-    enabled: true
-
-  ImportantRule:
-    enabled: false
-
-  ImportPath:
-    enabled: true
-    leading_underscore: false
-    filename_extension: false
-
-  Indentation:
-    enabled: true
-    allow_non_nested_indentation: true
-    character: space
-    width: 2
-
-  LeadingZero:
-    enabled: true
-    style: include_zero
-
-  MergeableSelector:
-    enabled: false
-    force_nesting: false
-
-  NameFormat:
-    enabled: true
-    convention: hyphenated_lowercase
-    allow_leading_underscore: true
-
-  NestingDepth:
-    enabled: true
-    max_depth: 1
-
-  PlaceholderInExtend:
-    enabled: true
-
-  PrivateNamingConvention:
-    enabled: true
-    prefix: _
-
-  PropertyCount:
-    enabled: false
-
-  PropertySortOrder:
-    enabled: false
-
-  PropertySpelling:
-    enabled: true
-    extra_properties: []
-
-  PropertyUnits:
-    enabled: false
-
-  PseudoElement:
-    enabled: true
-
-  QualifyingElement:
-    enabled: true
-    allow_element_with_attribute: false
-    allow_element_with_class: false
-    allow_element_with_id: false
-
-  SelectorDepth:
-    enabled: true
-    max_depth: 3
-
-  SelectorFormat:
-    enabled: true
-    convention: hyphenated_lowercase
-    class_convention: '^(?:u|is|has)\-[a-z][a-zA-Z0-9]*$|^(?!u|is|has)[a-zA-Z][a-zA-Z0-9]*(?:\-[a-z][a-zA-Z0-9]*)?(?:\-\-[a-z][a-zA-Z0-9]*)?$'
-
-  Shorthand:
-    enabled: true
-
-  SingleLinePerProperty:
-    enabled: true
-    allow_single_line_rule_sets: false
-
-  SingleLinePerSelector:
-    enabled: true
-
-  SpaceAfterComma:
-    enabled: true
-
-  SpaceAfterPropertyColon:
-    enabled: true
-    style: one_space
-
-  SpaceAfterPropertyName:
-    enabled: true
-
-  SpaceAfterVariableColon:
-    enabled: true
-    style: at_least_one_space
-
-  SpaceAfterVariableName:
-    enabled: true
-
-  SpaceAroundOperator:
-    enabled: true
-    style: one_space
-
-  SpaceBeforeBrace:
-    enabled: true
-    style: space
-    allow_single_line_padding: true
-
-  SpaceBetweenParens:
-    enabled: true
-    spaces: 0
-
-  StringQuotes:
-    enabled: true
-    style: single_quotes
-
-  TrailingSemicolon:
-    enabled: true
-
-  TrailingZero:
-    enabled: true
-
-  TransitionAll:
-    enabled: false
-
-  UnnecessaryMantissa:
-    enabled: true
-
-  UnnecessaryParentReference:
-    enabled: true
-
-  UrlFormat:
-    enabled: false
-
-  UrlQuotes:
-    enabled: true
-
-  VariableForProperty:
-    enabled: false
-
-  VendorPrefixes:
-    enabled: true
-    identifier_list: base
-    include: []
-    exclude: []
-
-  ZeroUnit:
-    enabled: true
+files:
+  include: '**/*.s+(a|c)ss'
+options:
+  formatter: stylish
+  merge-default-rules: true
+rules:
+  attribute-quotes:
+    - 1
+    - include: true
+  bem-depth:
+    - 1
+    - max-depth: 1
+  border-zero:
+    - 1
+    - convention: none
+  brace-style:
+    - 1
+    - style: stroustrup
+    - allow-single-line: false
+  class-name-format:
+    - 1
+    - convention: hyphenatedbem
+  clean-import-paths:
+    - 1
+    - filename-extension: false
+      leading-underscore: false
+  empty-line-between-blocks:
+    - 1
+    - ignore-single-line-rulesets: true
+  extends-before-declarations: 1
+  extends-before-mixins: 1
+  final-newline:
+    - 1
+    - include: true
+  force-attribute-nesting: 0
+  force-element-nesting: 0
+  force-pseudo-nesting: 0
+  function-name-format:
+    - 1
+    - allow-leading-underscore: true
+      convention: hyphenatedlowercase
+  hex-length:
+    - 1
+    - style: short
+  hex-notation:
+    - 1
+    - style: lowercase
+  id-name-format:
+    - 1
+    - convention: hyphenatedlowercase
+  indentation:
+    - 1
+    - size: 2
+  leading-zero:
+    - 1
+    - include: true
+  mixin-name-format:
+    - 1
+    - allow-leading-underscore: true
+      convention: hyphenatedlowercase
+  mixins-before-declarations: 1
+  nesting-depth:
+    - 1
+    - max-depth: 1
+  no-color-keywords: 1
+  no-color-literals: 1
+  no-css-comments: 0
+  no-debug: 1
+  no-duplicate-properties: 1
+  no-empty-rulesets: 1
+  no-extends: 0
+  no-ids: 1
+  no-important: 0
+  no-invalid-hex: 1
+  no-mergeable-selectors: 0
+  no-misspelled-properties:
+    - 1
+    - extra-properties: []
+  no-qualifying-elements:
+    - 1
+    - allow-element-with-attribute: true
+      allow-element-with-class: false
+      allow-element-with-id: false
+  no-trailing-zero: 1
+  no-transition-all: 0
+  no-url-protocols: 0
+  placeholder-in-extend: 1
+  placeholder-name-format:
+    - 1
+    - convention: hyphenatedlowercase
+  property-sort-order: 0
+  property-units: 0
+  quotes:
+    - 1
+    - style: single
+  shorthand-values: 1
+  single-line-per-selector: 1
+  space-after-bang:
+    - 1
+    - include: false
+  space-after-colon:
+    - 1
+    - include: true
+  space-after-comma: 1
+  space-before-bang:
+    - 1
+    - include: true
+  space-before-brace:
+    - 1
+    - include: true
+  space-before-colon: 1
+  space-between-parens:
+    - 1
+    - include: false
+  trailing-semicolon: 1
+  url-quotes: 1
+  variable-for-property: 0
+  variable-name-format:
+    - 1
+    - allow-leading-underscore: true
+      convention: hyphenatedlowercase
+  zero-unit: 1

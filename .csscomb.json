@@ -24,6 +24,9 @@
   "vendor-prefix-align": true,
   "sort-order": [
       [
+          "$include"
+      ],
+      [
           "position",
           "z-index",
           "top",

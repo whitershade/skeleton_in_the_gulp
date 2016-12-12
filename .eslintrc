@@ -1,0 +1,16 @@
+{
+ "extends": "eslint:recommended",
+ "env": {
+    "browser": true
+  },
+  "rules": {
+    "semi": [2, "always"],
+    "no-alert": 1,
+    "no-console": 1,
+    "space-before-blocks": [1, "always"],
+    "space-in-parens": [1, "never"]
+  },
+  "globals": {
+    "$"
+  }
+}

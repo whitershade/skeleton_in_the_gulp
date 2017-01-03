@@ -1,14 +1,18 @@
 var gulp = require('gulp'), // Подключаем Gulp
-    sass = require('gulp-sass'), // Подключаем sass/scss
-    cleanCSS = require('gulp-clean-css'), // Подключаем минимизатор для css
-    autoprefixer = require('gulp-autoprefixer'), // Подключаем автопрефиксер
-    sourcemaps = require('gulp-sourcemaps'), // Подключим soucemaps
+    sourcemaps = require('gulp-sourcemaps'), // Подключим sourcemaps
     rigger = require('gulp-rigger'), // для склеивания файлов
     uglify = require('gulp-uglify'), // для сжатия js
     browserSync = require('browser-sync'), // Подключаем Browser Sync;
     rimraf = require('rimraf'), // rm rf для ноды
     babel = require('gulp-babel'), // для использования es2015 в старых браузерах
     pug = require('gulp-pug'), // подключает pug (jade)
+
+		sorting = require('postcss-sorting'),
+		postcss = require('gulp-postcss'),
+		autoprefixer = require('autoprefixer'),
+		cssnano = require('cssnano'),
+		precss = require('precss'),
+		rename = require('gulp-rename');
 
     // переменные путей
     path = {
@@ -17,6 +21,7 @@ var gulp = require('gulp'), // Подключаем Gulp
         pug: 'app/*.pug', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
         js: 'app/js/main.js', //В стилях и скриптах нам понадобятся только main файлы
         style: 'app/scss/main.scss',
+				scss: 'app/scss/',
         img: 'app/img/**/*.*', //Синтаксис img/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
         fonts: 'app/fonts/**/*.*',
     },
@@ -97,27 +102,29 @@ gulp.task('pug:dist', function() { // Создаем таск для HTML
     .pipe(browserSync.reload({stream:true})); // Выполняем обновление в браузере
 });
 
-// SCSS
-gulp.task('scss:develop', function() { // Создаем таск "sass"
-    gulp.src(path.src.style) // Берем источник
-        .pipe(sourcemaps.init()) // Инициализируем sourcemaps
-        .pipe(sass().on('error', handleError)) // Преобразуем Scss в CSS посредством gulp-sass
-        .pipe(cleanCSS({compatibility: 'ie8'})) // Минимизируем их
-        .pipe(sourcemaps.write()) // Запишем sourcemaps
-        .pipe(gulp.dest(path.build.css)) // Выгружаем результат в папку build/css
-        .pipe(browserSync.stream()) // Обновляем CSS на странице при изменении
+gulp.task('css-sorting', function () {
+    return gulp.src(path.watch.scss).pipe(
+        postcss([
+            sorting({ "sort-order": [ "padding", "margin" ] })
+        ])
+    ).pipe(
+        gulp.dest(path.src.scss)
+    );
 });
 
-gulp.task('scss:dist', function() { // Создаем таск "sass"
-    gulp.src(path.src.style) // Берем источник
-        .pipe(sass().on('error', sass.logError))// Преобразуем Scss в CSS посредством gulp-sass
-        .pipe(autoprefixer({ // Добавляем префиксы
-            browsers: ['last 10 versions'],
-            cascade: false
-        }))
-        .pipe(cleanCSS({compatibility: 'ie8'}))  // Минимизируем их
-        .pipe(gulp.dest(path.dist.css)) // Выгружаем результат в папку dist/css
-        .pipe(browserSync.reload({stream: true})) // Обновляем CSS на странице при изменении
+gulp.task('scss:develop', function () {
+		var processors = [
+			precss(),
+			autoprefixer({browsers: ['last 10 version']})
+	];
+
+    return gulp.src(path.src.style)
+			.pipe(rename('main.css'))
+			.pipe(sourcemaps.init())// Инициализируем sourcemaps
+			.pipe(postcss(processors).on('error', handleError))
+			.pipe(sourcemaps.write('.')) // Запишем sourcemaps
+			.pipe(gulp.dest(path.build.css))
+			.pipe(browserSync.stream());
 });
 
 // IMAGES
@@ -196,6 +203,6 @@ gulp.task('clean:dist', function (cb) {
     rimraf(path.clean.dist, cb);
 });
 
-gulp.task('develop', ['pug:develop', 'scss:develop', 'js:develop', 'image:develop', 'fonts:develop', 'watch:develop', 'browser-sync:develop']); // Инициализация всех файлов, включения вотчера и автообновления в браузере
+gulp.task('develop', ['pug:develop', 'css-sorting', 'scss:develop', 'js:develop', 'image:develop', 'fonts:develop', 'watch:develop', 'browser-sync:develop']); // Инициализация всех файлов, включения вотчера и автообновления в браузере
 
 gulp.task('dist', ['pug:dist', 'scss:dist', 'js:dist', 'image:dist', 'fonts:dist', 'watch:dist', 'browser-sync:dist']); // Инициализация всех файлов, включения вотчера и автообновления в браузере

@@ -1,3 +1,5 @@
 //= ../../bower_components/jquery/dist/jquery.min.js
 
-$(function() { });
+$(function() {
+  console.log('jquery works!');
+});

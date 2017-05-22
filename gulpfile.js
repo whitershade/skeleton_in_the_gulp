@@ -7,12 +7,16 @@ var gulp = require('gulp'), // Подключаем Gulp
     babel = require('gulp-babel'), // для использования es2015 в старых браузерах
     pug = require('gulp-pug'), // подключает pug (jade)
 
+    // post css
 		sorting = require('postcss-sorting'),
 		postcss = require('gulp-postcss'),
 		autoprefixer = require('autoprefixer'),
-		cssnano = require('cssnano'),
+    cssnano = require('gulp-cssnano'),
 		precss = require('precss'),
-		rename = require('gulp-rename');
+    atImport = require('postcss-partial-import'),
+    discardComments = require('postcss-discard-comments'),
+
+		rename = require('gulp-rename'),
 
     // переменные путей
     path = {
@@ -38,6 +42,8 @@ var gulp = require('gulp'), // Подключаем Gulp
         html: 'dist/',
         js: 'dist/js/',
         css: 'dist/css/',
+        mainCss: './temp/main.css',
+        temp: './temp',
         img: 'dist/img/',
         fonts: 'dist/fonts/'
       },
@@ -90,7 +96,7 @@ gulp.task('pug:develop', function() { // Создаем таск для HTML
         pretty: true
       }).on('error', handleError)) // компилировать pug в html
     .pipe(gulp.dest(path.build.html)) // выплюнуть html по назначению
-    .pipe(browserSync.reload({stream:true})); // Выполняем обновление в браузере
+    .pipe(browserSync.reload({ stream : true })); // Выполняем обновление в браузере
 });
 
 gulp.task('pug:dist', function() { // Создаем таск для HTML
@@ -99,23 +105,23 @@ gulp.task('pug:dist', function() { // Создаем таск для HTML
         pretty: true
       })) // компилировать pug в html
     .pipe(gulp.dest(path.dist.html)) // выплюнуть html по назначению
-    .pipe(browserSync.reload({stream:true})); // Выполняем обновление в браузере
+    .pipe(browserSync.reload({ stream: true })); // Выполняем обновление в браузере
 });
 
-gulp.task('css-sorting', function () {
-    return gulp.src(path.watch.scss).pipe(
-        postcss([
-            sorting({ "sort-order": [ "padding", "margin" ] })
-        ])
-    ).pipe(
-        gulp.dest(path.src.scss)
-    );
-});
+// gulp.task('css-sorting', function () {
+//     return gulp.src(path.watch.scss).pipe(
+//         postcss([
+//             sorting({ "sort-order": [ "padding", "margin" ] })
+//         ])
+//     ).pipe(
+//         gulp.dest(path.src.scss)
+//     );
+// });
 
 gulp.task('scss:develop', function () {
 		var processors = [
-			precss(),
-			autoprefixer({browsers: ['last 10 version']})
+      atImport(),
+			precss()
 	];
 
     return gulp.src(path.src.style)
@@ -127,19 +133,43 @@ gulp.task('scss:develop', function () {
 			.pipe(browserSync.stream());
 });
 
+gulp.task('scss:dist', function () {
+		var processors = [
+      atImport(),
+			precss(),
+			autoprefixer({ browsers: ['last 10 version'] }),
+	];
+
+    return gulp.src(path.src.style)
+			.pipe(rename('main.css'))
+			.pipe(postcss(processors).on('error', handleError))
+			.pipe(gulp.dest(path.dist.temp))
+			.pipe(browserSync.stream());
+});
+
+gulp.task('scss:nano', function() {
+    return gulp.src(path.dist.mainCss)
+        .pipe(cssnano())
+        .pipe(gulp.dest(path.dist.css));
+});
+
+gulp.task('scss:clean-temp', function(cb) {
+  rimraf(path.dist.temp, cb);
+});
+
 // IMAGES
 gulp.task('image:develop', function (cb) {
     rimraf(path.clean.developImg, cb);
     gulp.src(path.src.img) //Выберем наши картинки
         .pipe(gulp.dest(path.build.img)) //И бросим в build
-        .pipe(browserSync.reload({stream: true}));
+        .pipe(browserSync.reload({ stream: true }));
 });
 
 gulp.task('image:dist', function (cb) {
     rimraf(path.clean.distImg, cb);
     gulp.src(path.src.img) //Выберем наши картинки
         .pipe(gulp.dest(path.dist.img)) //И бросим в dist
-        .pipe(browserSync.reload({stream: true}));
+        .pipe(browserSync.reload({ stream: true }));
 });
 
 // FONTS
@@ -147,14 +177,14 @@ gulp.task('fonts:develop', function(cb) {
     rimraf(path.clean.developFonts, cb);
     gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.build.fonts))
-        .pipe(browserSync.reload({stream: true}));
+        .pipe(browserSync.reload({ stream: true }));
 });
 
 gulp.task('fonts:dist', function(cb) {
     rimraf(path.clean.distFonts, cb);
     gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.dist.fonts))
-        .pipe(browserSync.reload({stream: true}));
+        .pipe(browserSync.reload({ stream: true }));
 });
 
 // JS
@@ -165,7 +195,7 @@ gulp.task('js:develop', function () {
         .pipe(babel({ presets: ['es2015'] }).on('error', handleError)) // перепишем на старый js
         .pipe(sourcemaps.write()) //Пропишем карты
         .pipe(gulp.dest(path.build.js)) //Выплюнем готовый файл в build
-        .pipe(browserSync.reload({stream: true})); //И перезагрузим сервер
+        .pipe(browserSync.reload({ stream: true })); //И перезагрузим сервер
 });
 
 gulp.task('js:dist', function () {
@@ -174,7 +204,7 @@ gulp.task('js:dist', function () {
         .pipe(babel({ presets: ['es2015'] })) // перепишем на старый js
         .pipe(uglify()) //Сожмем наш js
         .pipe(gulp.dest(path.dist.js)) //Выплюнем готовый файл в build
-        .pipe(browserSync.reload({stream: true})); // И перезагрузим сервер
+        .pipe(browserSync.reload({ stream: true })); // И перезагрузим сервер
 });
 
 // WATCHER
@@ -188,7 +218,7 @@ gulp.task('watch:develop', function() {
 
 gulp.task('watch:dist', function() {
     gulp.watch(path.watch.pug, ['pug:dist']); // Наблюдение за HTML файлами
-    gulp.watch(path.watch.scss, ['scss:dist']); // Наблюдение за SCSS файлами
+    gulp.watch(path.watch.scss, ['scss:dist', 'scss:nano', 'scss:clean-temp']); // Наблюдение за SCSS файлами
     gulp.watch(path.watch.js, ['js:dist']); // Наблюдение за картинками
     gulp.watch(path.watch.fonts, ['fonts:dist']); // Наблюдение шрифтами
     gulp.watch(path.watch.img, ['image:dist']); // Наблюдение за картинками
@@ -203,6 +233,6 @@ gulp.task('clean:dist', function (cb) {
     rimraf(path.clean.dist, cb);
 });
 
-gulp.task('develop', ['pug:develop', 'css-sorting', 'scss:develop', 'js:develop', 'image:develop', 'fonts:develop', 'watch:develop', 'browser-sync:develop']); // Инициализация всех файлов, включения вотчера и автообновления в браузере
+gulp.task('develop', ['pug:develop', 'scss:develop', 'js:develop', 'image:develop', 'fonts:develop', 'watch:develop', 'browser-sync:develop']); // Инициализация всех файлов, включения вотчера и автообновления в браузере
 
-gulp.task('dist', ['pug:dist', 'scss:dist', 'js:dist', 'image:dist', 'fonts:dist', 'watch:dist', 'browser-sync:dist']); // Инициализация всех файлов, включения вотчера и автообновления в браузере
+gulp.task('dist', ['pug:dist', 'scss:dist', 'scss:nano', 'scss:clean-temp', 'js:dist', 'image:dist', 'fonts:dist', 'watch:dist', 'browser-sync:dist']); // Инициализация всех файлов, включения вотчера и автообновления в браузере
